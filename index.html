@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent 2025</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Georgia", serif;
+            background: linear-gradient(to bottom, #0b1c42, #0f295f, #183b92);
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-size: 3rem;
+            letter-spacing: 2px;
+        }
+
+        .intro-verse {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            font-style: italic;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto 60px auto;
+            padding: 20px;
+        }
+
+        .day-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(3px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .day-box:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        footer {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background: #fff;
+            color: #000;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.2rem;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .close {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Advent 2025</h1>
+
+    <div class="intro-verse">
+        “The people who walked in darkness have seen a great light.” — Isaiah 9:2 (NKJV)
+    </div>
+
+    <div class="calendar-grid" id="calendar"></div>
+
+    <!-- Modal Window -->
+    <div id="verseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-day"></h2>
+            <p id="modal-text"></p>
+        </div>
+    </div>
+
+    <footer>
+        Advent reflections © 2025
+    </footer>
+
+    <script>
+        // Store verses here (add more later)
+        const verses = {
+            1: `“Therefore the Lord Himself will give you a sign:
+                Behold, the virgin shall conceive and bear a Son,
+                and shall call His name Immanuel.”
+                — Isaiah 7:14 (NKJV)`,
+
+            2: `“For unto us a Child is born,
+                unto us a Son is given;
+                and the government will be upon His shoulder.
+                And His name will be called Wonderful, Counselor, Mighty God,
+                Everlasting Father, Prince of Peace.”
+                — Isaiah 9:6 (NKJV)`,
+
+            3: `“But you, Bethlehem Ephrathah,
+                Though you are little among the thousands of Judah,
+                Yet out of you shall come forth to Me
+                The One to be Ruler in Israel,
+                Whose goings forth are from of old,
+                From everlasting.”
+                — Micah 5:2 (NKJV)`
+        };
+
+        // Generate the 25 day boxes
+        const grid = document.getElementById("calendar");
+
+        for (let day = 1; day <= 25; day++) {
+            const box = document.createElement("div");
+            box.className = "day-box";
+            box.innerHTML = `Day ${day}`;
+            box.onclick = () => openModal(day);
+            grid.appendChild(box);
+        }
+
+        // Open modal with verse
+        function openModal(day) {
+            document.getElementById("modal-day").innerText = "Day " + day;
+            document.getElementById("modal-text").innerHTML =
+                verses[day] || "Verse coming soon...";
+            document.getElementById("verseModal").style.display = "block";
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById("verseModal").style.display = "none";
+        }
+
+        // Close if clicking outside modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById("verseModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+
+</body>
+</html>
