@@ -145,19 +145,26 @@
         filter: brightness(1.3);
     }
 
+
     .flame {
-        position: absolute;
-        top: -35px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 30px;
-        background: radial-gradient(ellipse at center, #fff6a9 0%, #ffd25a 45%, rgba(255,255,255,0) 70%);
-        animation: flicker 0.13s infinite alternate;
-        border-radius: 50% 50% 60% 60%;
-        filter: drop-shadow(0 0 10px #ffc241);
-        pointer-events: none;
-    }
+    	position: absolute;
+    	top: -35px;
+    	left: 50%;
+    	transform: translateX(-50%);
+    	width: 20px;
+    	height: 30px;
+    	background: radial-gradient(ellipse at center, #fff6a9 0%, #ffd25a 45%, rgba(255,255,255,0) 70%);
+    	animation: flicker 0.13s infinite alternate;
+    	border-radius: 50% 50% 60% 60%;
+    	filter: drop-shadow(0 0 10px #ffc241);
+    	pointer-events: none;
+    	display: none;          /* default hidden */
+	}
+
+     .flame.lit {
+    	display: block;         /* show when lit */
+      }
+
 
     @keyframes flicker {
         0% { transform: translateX(-50%) scale(0.95); opacity: 0.92; }
@@ -169,6 +176,24 @@
         font-size: 0.9rem;
         opacity: 0.6;
     }
+
+	/* Frosted effect for locked days */
+.day-box.locked {
+    opacity: 0.45;
+    filter: blur(1px);
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Unlocked days (normal) */
+.day-box.unlocked {
+    opacity: 1;
+    filter: none;
+    cursor: pointer;
+}
+
 </style>
 </head>
 
@@ -193,11 +218,12 @@
 
 <!-- ✨ Advent Candles Footer Section -->
 <div class="advent-candles">
-    <div class="candle"><div class="flame"></div></div>
-    <div class="candle"><div class="flame"></div></div>
-    <div class="candle pink"><div class="flame"></div></div>
-    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div id="candle1" class="flame"></div></div>
+    <div class="candle"><div id="candle2" class="flame"></div></div>
+    <div class="candle pink"><div id="candle3" class="flame"></div></div>
+    <div class="candle"><div id="candle4" class="flame"></div></div>
 </div>
+
 
 <footer>
     Advent reflections © 2025
@@ -229,39 +255,136 @@ function createSparkle(x, y) {
 
 <!-- 📖 Calendar Script -->
 <script>
-const verses = {
-    1: `“Immediately after the tribulation of those days shall the sun be darkened, and the moon shall not give her light, and the stars shall fall from heaven, and the powers of the heavens shall be shaken; and then shall appear the sign of the Son of man in heaven, and then shall all the tribes of the earth mourn, and they shall see the Son of man coming in the clouds of heaven with power and great glory. And he shall send his angels with a great sound of a trumpet, and they shall gather together his elect from the four winds, from one end of heaven to the other. Now learn a parable of the fig tree: When his branch is yet tender and putteth forth leaves, ye know that summer is nigh. So likewise ye, when ye shall see all these things, know that it is near, even at the doors. Verily I say unto you, This generation shall not pass till all these things be fulfilled. Heaven and earth shall pass away, but my words shall not pass away. But of that day and hour knoweth no man, no, not the angels of heaven, but my Father only. But as the days of Noe were, so shall also the coming of the Son of man be. For as in the days that were before the flood they were eating and drinking, marrying and giving in marriage, until the day that Noe entered into the ark, and knew not until the flood came and took them all away, so shall also the coming of the Son of man be. Then shall two be in the field; the one shall be taken and the other left. Two women shall be grinding at the mill; the one shall be taken and the other left. Watch therefore, for ye know not what hour your Lord doth come. But know this: that if the goodman of the house had known in what watch the thief would come, he would have watched and would not have suffered his house to be broken up. Therefore be ye also ready, for in such an hour as ye think not the Son of man cometh.” — Matthew 24:29–44 (KJV)`,
-2: `“Thus saith the Lord; A voice was heard in Ramah, lamentation, and bitter weeping; Rahel weeping for her children refused to be comforted for her children, because they were not. Thus saith the Lord; Refrain thy voice from weeping, and thine eyes from tears: for thy work shall be rewarded, saith the Lord; and they shall come again from the land of the enemy. And there is hope in thine end, saith the Lord, that thy children shall come again to their own border. I have surely heard Ephraim bemoaning himself thus; Thou hast chastised me, and I was chastised, as a bullock unaccustomed to the yoke: turn thou me, and I shall be turned; for thou art the Lord my God. Surely after that I was turned, I repented; and after that I was instructed, I smote upon my thigh: I was ashamed, yea, even confounded, because I did bear the reproach of my youth. Is Ephraim my dear son? Is he a pleasant child? For since I spake against him, I do earnestly remember him still: therefore my bowels are troubled for him; I will surely have mercy upon him, saith the Lord. Set thee up waymarks, make thee high heaps: set thine heart toward the highway, even the way which thou wentest: turn again, O virgin of Israel, turn again to these thy cities. How long wilt thou go about, O thou backsliding daughter? For the Lord hath created a new thing in the earth, A woman shall compass a man. Thus saith the Lord of hosts, the God of Israel; As yet they shall use this speech in the land of Judah and in the cities thereof, when I shall bring again their captivity; The Lord bless thee, O habitation of justice, and mountain of holiness. And there shall dwell in Judah itself, and in all the cities thereof together, husbandmen, and they that go forth with flocks. For I have satiated the weary soul, and I have replenished every sorrowful soul. Upon this I awaked, and beheld; and my sleep was sweet unto me. Behold, the days come, saith the Lord, that I will sow the house of Israel and the house of Judah with the seed of man, and with the seed of beast. And it shall come to pass, that like as I have watched over them, to pluck up, and to break down, and to throw down, and to destroy, and to afflict; so will I watch over them, to build, and to plant, saith the Lord. In those days they shall say no more, The fathers have eaten a sour grape, and the children’s teeth are set on edge. But every one shall die for his own iniquity: every man that eateth the sour grape, his teeth shall be set on edge.” — Jeremiah 31:15–30 (KJV)`,
-    11: `“Therefore the Lord Himself will give you a sign:
-        Behold, the virgin shall conceive and bear a Son,
-        and shall call His name Immanuel.”
-        — Isaiah 7:14 (NKJV)`,
 
-    22: `“For unto us a Child is born,
-        unto us a Son is given;
-        and the government will be upon His shoulder.
-        And His name will be called Wonderful, Counselor, Mighty God,
-        Everlasting Father, Prince of Peace.”
-        — Isaiah 9:6 (NKJV)`,
-    3: `MERRY CHRISTMAS`,
-    25: `“But you, Bethlehem Ephrathah,
-        Though you are little among the thousands of Judah,
-        Yet out of you shall come forth to Me
-        The One to be Ruler in Israel,
-        Whose goings forth are from of old,
-        From everlasting.”
-        — Micah 5:2 (NKJV)`
+const verses = {
+    1: `⭐“The voice of him that crieth in the wilderness, Prepare ye the way of the Lord, make straight in the desert a highway for our God.” — Isaiah 40:3–5 (KJV)`,
+
+    2: `📜“Behold, the days come, saith the Lord, that I will perform that good thing which I have promised unto the house of Israel and to the house of Judah.” — Jeremiah 33:14–15 (KJV)`,
+
+    3: `🕯️“O come, O come, Emmanuel, and ransom captive Israel, that mourns in lonely exile here, until the Son of God appear.” — *O Come, O Come, Emmanuel* (Public Domain)`,
+
+    4: `✨“The people that walked in darkness have seen a great light.” — Isaiah 9:2 (KJV)`,
+
+    5: `👼“Thou shalt call his name JESUS. He shall be great, and shall be called the Son of the Highest.” — Luke 1:30–33 (KJV)`,
+
+    6: `🌿“And there shall come forth a rod out of the stem of Jesse… and the spirit of the Lord shall rest upon him.” — Isaiah 11:1–2 (KJV)`,
+
+    7: `🔔“Hark! the herald angels sing, ‘Glory to the newborn King!’” — *Hark! The Herald Angels Sing*`,
+
+    8: `🔔“Out of thee shall he come forth unto me that is to be ruler in Israel.” — Micah 5:2 (KJV)`,
+
+    9: `🎵“Behold, a virgin shall be with child… and they shall call his name Emmanuel.” — Matthew 1:22–23 (KJV)`,
+
+    10: `🎁“Behold, a virgin shall conceive, and bear a son, and shall call his name Immanuel.” — Isaiah 7:14 (KJV)`,
+
+    11: `🎶“Make a joyful noise unto the Lord, all the earth: make a loud noise, and rejoice, and sing praise.” — Psalm 98:4–6 (KJV)`,
+
+    12: `❄️“Joy to the world! the Lord is come; let earth receive her King.” — *Joy to the World*`,
+
+    13: `🎁“Behold, I will send my messenger, and he shall prepare the way before me.” — Malachi 3:1 (KJV)`,
+
+    14: `📯“Behold, I bring you good tidings of great joy… For unto you is born this day in the city of David a Saviour, which is Christ the Lord.” — Luke 2:10–11 (KJV)`,
+
+    15: `🧡“Rejoice greatly, O daughter of Zion; behold, thy King cometh unto thee.” — Zechariah 9:9 (KJV)`,
+
+    16: `🤍“The desert shall rejoice, and blossom as the rose.” — Isaiah 35:1–2 (KJV)`,
+
+    17: `🎼“O little town of Bethlehem, how still we see thee lie! Above thy deep and dreamless sleep the silent stars go by.” — *O Little Town of Bethlehem* (Public Domain)`,
+
+    18: `🌌“In him was life; and the life was the light of men. And the light shineth in darkness.” — John 1:4–5 (KJV)`,
+
+    19: `🙏“My soul doth magnify the Lord, and my spirit hath rejoiced in God my Saviour.” — Luke 1:46–49 (KJV)`,
+
+    20: `🌄“How beautiful upon the mountains are the feet of him that bringeth good tidings.” — Isaiah 52:7 (KJV)`,
+
+    21: `🔆“The Lord is my light and my salvation; whom shall I fear?” — Psalm 27:1 (KJV)`,
+
+    22: `🕊️“For unto us a child is born, unto us a son is given…” — Isaiah 9:6 (KJV)`,
+
+    23: `🎼“Silent night, holy night! All is calm, all is bright.” — *Silent Night* (Public Domain)`,
+
+    24:  `✨👼🌟👼✨“And suddenly there was with the angel a multitude of the heavenly host praising God, and saying, Glory to God in the highest, and on earth peace, good will toward men.” — Luke 2:8–14 (KJV)`,
+
+    25:`🎄👶🎄“And so it was, that, while they were there, the days were accomplished that she should be delivered. And she brought forth her firstborn son.” — Luke 2:4–7 (KJV)`
 };
+
+
 
 const grid = document.getElementById("calendar");
 
+const today = new Date();
+let currentMonth = today.getMonth(); // 0=Jan, 11=Dec
+let currentDay = today.getDate();    // day of month
+
+// FOR TESTING (uncomment these lines when needed)
+// currentMonth = 11; 
+//currentDay = 8;   // Pretend it is December 5
+
 for (let day = 1; day <= 25; day++) {
     const box = document.createElement("div");
-    box.className = "day-box";
-    box.innerHTML = `Day ${day}`;
-    box.onclick = () => openModal(day);
+    box.classList.add("day-box");
+    box.innerHTML = `Dec ${day}`;
+
+    // 🎄 Unlock only if it's December AND the day has arrived
+    if (currentMonth === 11 && currentDay >= day) {
+        box.classList.add("unlocked");
+        box.addEventListener("click", () => openModal(day));
+    } else {
+        box.classList.add("locked");
+        box.addEventListener("click", () => {
+            alert("No peeking! This day has not arrived yet!");
+        });
+    }
+
     grid.appendChild(box);
 }
+function lightCandles() {
+    const today = new Date();
+    let month = today.getMonth(); // 11 = December
+    let day = today.getDate();
+
+    // --- OPTIONAL TESTING ---  
+    // month = 11;
+    //day = 8;   // try different days to preview behavior
+    // -------------------------
+
+    const c1 = document.getElementById("candle1");
+    const c2 = document.getElementById("candle2");
+    const c3 = document.getElementById("candle3");
+    const c4 = document.getElementById("candle4");
+
+    // WEEK 1: Dec 1–6
+    if (month === 11 && day >= 1) {
+        c1.classList.add("lit");
+    }
+
+    // WEEK 2: Dec 7–13
+    if (month === 11 && day >= 7) {
+        c2.classList.add("lit");
+    }
+
+    // WEEK 3: Dec 14–20 (pink candle)
+    if (month === 11 && day >= 14) {
+        c3.classList.add("lit");
+    }
+
+    // WEEK 4: Dec 21–25
+    if (month === 11 && day >= 21) {
+        c4.classList.add("lit");
+    }
+
+    // CHRISTMAS DAY — keep all 4 lit
+    if (month === 11 && day >= 25) {
+        c1.classList.add("lit");
+        c2.classList.add("lit");
+        c3.classList.add("lit");
+        c4.classList.add("lit");
+    }
+}
+
+// Call this after page load:
+lightCandles();
+
 
 function openModal(day) {
     document.getElementById("modal-day").innerText = "Day " + day;
