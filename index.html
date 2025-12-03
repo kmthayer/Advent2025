@@ -69,20 +69,30 @@
         background: rgba(0,0,0,0.6);
     }
 .modal-content {
-    background: #fff;
-    color: #000;
+    background: #fffdf8; /* warm, soft ivory */
+    color: #3a2a1a;      /* warm chocolate-brown text */
     margin: 10% auto;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 25px 30px;
+    border-radius: 12px;
+
+    /* Elegant gold frame */
+    border: 5px double #d4af37; /* metallic gold */
+    
+    /* Candlelight glow */
+    box-shadow:
+        0 0 25px rgba(212,175,55,0.5),
+        0 0 10px rgba(0,0,0,0.2);
+
     width: 80%;
     max-width: 600px;
     font-size: 1.2rem;
-    line-height: 1.5;
+    line-height: 1.55;
 
-    /* NEW */
-    max-height: 70vh;
+    /* Allow scrolling for long verses */
+    max-height: 72vh;
     overflow-y: auto;
 }
+
 
     .close {
         float: right;
@@ -271,7 +281,7 @@ const verses = {
 
     7: `🔔“Hark! the herald angels sing, ‘Glory to the newborn King!’” — *Hark! The Herald Angels Sing*`,
 
-    8: `🔔“Out of thee shall he come forth unto me that is to be ruler in Israel.” — Micah 5:2 (KJV)`,
+    8: `🐑“Out of thee shall he come forth unto me that is to be ruler in Israel.” — Micah 5:2 (KJV)`,
 
     9: `🎵“Behold, a virgin shall be with child… and they shall call his name Emmanuel.” — Matthew 1:22–23 (KJV)`,
 
@@ -287,7 +297,7 @@ const verses = {
 
     15: `🧡“Rejoice greatly, O daughter of Zion; behold, thy King cometh unto thee.” — Zechariah 9:9 (KJV)`,
 
-    16: `🤍“The desert shall rejoice, and blossom as the rose.” — Isaiah 35:1–2 (KJV)`,
+    16: `🌹“The desert shall rejoice, and blossom as the rose.” — Isaiah 35:1–2 (KJV)`,
 
     17: `🎼“O little town of Bethlehem, how still we see thee lie! Above thy deep and dreamless sleep the silent stars go by.” — *O Little Town of Bethlehem* (Public Domain)`,
 
@@ -387,7 +397,7 @@ lightCandles();
 
 
 function openModal(day) {
-    document.getElementById("modal-day").innerText = "Day " + day;
+    document.getElementById("modal-day").innerText = "🌲Day " + day +"🎀";
     document.getElementById("modal-text").innerHTML =
         verses[day] || "Verse coming soon...";
     document.getElementById("verseModal").style.display = "block";
