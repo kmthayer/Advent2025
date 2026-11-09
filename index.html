@@ -4,7 +4,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b1c42">
 <meta charset="UTF-8">
-<title>Advent 2025</title>
+<title>Advent Scriptures 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -211,7 +211,7 @@
 
 <body>
 
-<h1>Advent 2025</h1>
+<h1>Advent 2026</h1>
 
 <div class="intro-verse">
     “The people who walked in darkness have seen a great light.” — Isaiah 9:2 (NKJV)
@@ -238,7 +238,7 @@
 
 
 <footer>
-    Advent reflections © 2025 KMT
+    Advent reflections © 2025–2026 KMT
 </footer>
 
 <!-- ✨ Sparkle Trail Script -->
@@ -323,80 +323,44 @@ const verses = {
 
 
 const grid = document.getElementById("calendar");
-
 const today = new Date();
-let currentMonth = today.getMonth(); // 0=Jan, 11=Dec
-let currentDay = today.getDate();    // day of month
+const preview = new URLSearchParams(window.location.search).get('preview') === '1';
+const year = today.getFullYear();
 
-// FOR TESTING (uncomment these lines when needed)
-// currentMonth = 11; 
-//currentDay = 8;   // Pretend it is December 5
+// The four Sundays before Christmas, calculated for any year.
+function firstSundayOfAdvent(y) {
+    const christmas = new Date(y, 11, 25);
+    const daysSinceSunday = christmas.getDay();
+    const fourthSunday = new Date(y, 11, 25 - daysSinceSunday);
+    return new Date(y, 11, fourthSunday.getDate() - 21);
+}
 
+// Preserve the original 25 December Scripture doors.
 for (let day = 1; day <= 25; day++) {
     const box = document.createElement("div");
     box.classList.add("day-box");
-    box.innerHTML = `Dec ${day}`;
-
-    // 🎄 Unlock only if it's December AND the day has arrived
-    if (currentMonth === 11 && currentDay >= day) {
-        box.classList.add("unlocked");
-        box.addEventListener("click", () => openModal(day));
-    } else {
-        box.classList.add("locked");
-        box.addEventListener("click", () => {
-            alert("No peeking! This day has not arrived yet!");
-        });
-    }
-
+    box.textContent = `Dec ${day}`;
+    const openingDate = new Date(year, 11, day);
+    const accessible = preview || today >= openingDate;
+    box.classList.add(accessible ? "unlocked" : "locked");
+    box.addEventListener("click", () => {
+        if (accessible) openModal(day);
+        else alert("No peeking! This day has not arrived yet!");
+    });
     grid.appendChild(box);
 }
+
 function lightCandles() {
-    const today = new Date();
-    let month = today.getMonth(); // 11 = December
-    let day = today.getDate();
-
-    // --- OPTIONAL TESTING ---  
-    // month = 11;
-    //day = 8;   // try different days to preview behavior
-    // -------------------------
-
-    const c1 = document.getElementById("candle1");
-    const c2 = document.getElementById("candle2");
-    const c3 = document.getElementById("candle3");
-    const c4 = document.getElementById("candle4");
-
-    // WEEK 1: Dec 1–6
-    if (month === 11 && day >= 1) {
-        c1.classList.add("lit");
-    }
-
-    // WEEK 2: Dec 7–13
-    if (month === 11 && day >= 7) {
-        c2.classList.add("lit");
-    }
-
-    // WEEK 3: Dec 14–20 (pink candle)
-    if (month === 11 && day >= 14) {
-        c3.classList.add("lit");
-    }
-
-    // WEEK 4: Dec 21–25
-    if (month === 11 && day >= 21) {
-        c4.classList.add("lit");
-    }
-
-    // CHRISTMAS DAY — keep all 4 lit
-    if (month === 11 && day >= 25) {
-        c1.classList.add("lit");
-        c2.classList.add("lit");
-        c3.classList.add("lit");
-        c4.classList.add("lit");
+    const adventStart = firstSundayOfAdvent(year);
+    for (let i = 0; i < 4; i++) {
+        const candleDate = new Date(adventStart);
+        candleDate.setDate(adventStart.getDate() + 7 * i);
+        if (preview || today >= candleDate) {
+            document.getElementById("candle" + (i + 1)).classList.add("lit");
+        }
     }
 }
-
-// Call this after page load:
 lightCandles();
-
 
 function openModal(day) {
     document.getElementById("modal-day").innerText = "🌲Day " + day +"🎀";
@@ -415,12 +379,6 @@ window.onclick = function(event) {
 };
 
 </script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/Advent2025/service-worker.js")
-    .then(() => console.log("Service Worker registered"))
-    .catch(err => console.error("SW registration failed", err));
-}
-</script>
+
 </body>
 </html>
